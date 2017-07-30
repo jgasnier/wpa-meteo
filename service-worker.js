@@ -32,6 +32,8 @@ var filesToCache = [
   '/images/snow.png',
   '/images/thunderstorm.png',
   '/images/wind.png',
+  '/images/ic_clear_black.png',
+  '/images/ic_location.png',
   '/images/ic_cloud_off.png'
 ];
 

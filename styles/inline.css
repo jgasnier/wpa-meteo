@@ -191,6 +191,14 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; }
 
+.card:nth-child(2){
+  background: url(/images/ic_location.png) 9px 9px white no-repeat;
+  background-size: 2.4em;
+}
+.card:nth-child(2) .location{
+  margin-left: 30px;
+}  
+
 .dialog-container {
   background: rgba(0, 0, 0, 0.57);
   position: fixed;
@@ -212,12 +220,10 @@ body {
   background: #FFF;
   border-radius: 2px;
   box-shadow: 0 0 14px rgba(0, 0, 0, 0.24), 0 14px 28px rgba(0, 0, 0, 0.48);
-  min-width: 280px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%) translateY(30px);
-          transform: translate(-50%, -50%) translateY(30px);
+  position: fixed;
+  left: 0;
+  top: 55px;
+  width: 100%;
   -webkit-transition: -webkit-transform 0.333s cubic-bezier(0, 0, 0.21, 1) 0.05s;
   transition: -webkit-transform 0.333s cubic-bezier(0, 0, 0.21, 1) 0.05s;
   transition: transform 0.333s cubic-bezier(0, 0, 0.21, 1) 0.05s;
@@ -227,6 +233,13 @@ body {
   padding-left: 24px;
   padding-right: 24px; }
 
+.dialog-body > input{
+  border: 1px solid #ccc;
+  width: 100%;
+  height: 35px;
+  font-size: 1.3em;
+}
+
 .dialog-title {
   padding-top: 20px;
   font-size: 1.25em; }
@@ -234,13 +247,37 @@ body {
 .dialog-body {
   padding-top: 20px;
   padding-bottom: 24px; }
-  .dialog-body select {
-    width: 100%;
-    font-size: 1.5em; }
+
+.dialog-body select {
+  width: 100%;
+  font-size: 1.5em; }
 
 .dialog-buttons {
   padding: 8px !important;
-  float: right; }
+  float: right; 
+  margin-right: 16px;
+}
+.but-remove{
+  background: url(/images/ic_clear_black.png) no-repeat;
+  border: none;
+  padding: 15px;
+  float: right;
+  background-size: 2.8em;
+}
+
+#listCitys {
+  list-style-type: none;
+  -moz-padding-start: 0;
+  -webkit-padding-start: 0;
+  -khtml-padding-start: 0;
+  -o-padding-start: 0;
+  padding-start: 0;
+  padding: 0;
+}
+#listCitys li{
+  padding-top: 5px;
+  padding-bottom: 5px;
+} 
 
 .button{
   background: 0 0;
@@ -282,8 +319,14 @@ body {
 .weather-forecast .location {
   font-size: 1.75em; }
 
+.weather-forecast .description{
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 .weather-forecast .date, .weather-forecast .description {
-  font-size: 1.25em; }
+  font-size: 1.25em;
+ }
 
 .weather-forecast .current {
   display: -webkit-box;

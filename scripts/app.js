@@ -45,22 +45,21 @@
     app.toggleAddDialog(true);
   });
 
-  document.getElementById('butAddCity').addEventListener('click', function() {
+  document.getElementById('searchCity').addEventListener('keyup', function() {
     // Add the newly selected city  
     app.searchCity(document.getElementById('searchCity').value);
+  });
 
-    /*var select = document.getElementById('selectCityToAdd');
-    var selected = select.options[select.selectedIndex];
-    var key = selected.value;
-    var label = selected.textContent;
-    if (!app.selectedCities) {
-      app.selectedCities = [];
-    }
+  document.getElementById('listCitys').addEventListener('click', function(e) {
+
+    var key = (e.target.tagName == "LI")? e.target.getAttribute("data-key") : e.target.parentElement.getAttribute("data-key");
+    var label = (e.target.tagName == "LI")? e.target.getAttribute("data-label") : e.target.parentElement.getAttribute("data-label");
+
     app.getForecast(key, label);
     app.selectedCities.push({key: key, label: label});
     app.saveSelectedCities();
-    app.toggleAddDialog(false);*/
-  });
+    app.toggleAddDialog(false);
+  });  
 
   document.getElementById('butAddCancel').addEventListener('click', function() {
     // Close the add new city dialog
@@ -73,6 +72,7 @@
    * Methods to update/refresh the UI
    *
    ****************************************************************************/
+
 
   // Toggles the visibility of the add new city dialog.
   app.toggleAddDialog = function(visible) {
@@ -166,10 +166,19 @@
     if(time.indexOf('am') != -1 && hours == 12) {
         time = time.replace('12', '0');
     }
+    if(time.indexOf('am') != -1 && hours < 12) {
+        time = time.replace(hours, '0' + hours);
+    }
     if(time.indexOf('pm')  != -1 && hours < 12) {
         time = time.replace(hours, (hours + 12));
     }
     return time.replace(/(am|pm)/, '');
+  }
+
+  app.constructList = function(list,city) {
+
+      list.insertAdjacentHTML('beforeend',
+                '<li class="city" data-key="'+city.woeid+'" data-label="'+city.name+'"><span style="font-weight:bold;font-size:1.3em;">'+city.name+'</span> <span style="font-style:italic">'+city.country+' '+(city.admin1 ? city.admin1 : "")+'</span></li>');
   }
 
   /*****************************************************************************
@@ -220,11 +229,12 @@
           results.label = label;
           results.created = response.query.created;
           app.updateForecastCard(results);
+        }else{
+
+          app.spinner.setAttribute('hidden', true);
+          app.error.classList.add('error-visible');
+
         }
-      } else {
-        // Return the initial weather forecast since no data is available.
-        //app.updateForecastCard(initialWeatherForecast);
-        //app.geoWeatherForecast();
       }
     };
     request.open('GET', url);
@@ -407,9 +417,7 @@
            
           }
         } else {
-          app.spinner.setAttribute('hidden', true);
-          app.error.classList.add('error-visible');
-
+         
         }
       };
       request.open('GET', url);
@@ -418,27 +426,44 @@
     });
   }    
 
+  /**
+  * recherche des villes selon le texte saisi et affiche la liste des propositions
+  */
   app.searchCity = function(txt) {
     
-    var statement = 'SELECT woeid,name,admin1.content,admin2.content FROM geo.places WHERE text="('+txt+')"';
-      var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' + statement;
+    var statement = 'SELECT woeid,name,country.content,admin1.content FROM geo.places WHERE text="('+txt+')"';
+    var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' + statement;
 
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function() {
-        if (request.readyState === XMLHttpRequest.DONE) {
-          if (request.status === 200) {
-            var response = JSON.parse(request.response);
-            var results = response.query.results;
+    var request = new XMLHttpRequest();
+    
+    request.open('GET', url);
+    request.send();  
 
-            console.log(results);
-           
+    request.onreadystatechange = function() {
+      if (request.readyState === XMLHttpRequest.DONE) {
+        if (request.status === 200) {
+          var response = JSON.parse(request.response);
+          //var results = response.query.results.place;
+
+          //document.querySelector("#listCitys .first").removeAttribute('hidden');
+          var list = document.getElementById("listCitys");
+          list.innerHTML = '';
+
+          if(response.query.count == 0 && txt){
+            list.insertAdjacentHTML('beforeend','<li>Aucun résultat</li>');
+          }else if(response.query.count > 1){
+            response.query.results.place.forEach(function(city) {
+              
+              app.constructList(list,city);
+            });
+          }else{
+            app.constructList(list,response.query.results.place);
           }
-        } else {
 
+          //document.querySelector("#listCitys .first").setAttribute('hidden','hidden');                    
         }
-      };
-      request.open('GET', url);
-      request.send();  
+      } 
+    };  
 
   };  
 
@@ -470,6 +495,16 @@
     app.geoWeatherForecast();
     
   }
+
+
+
+  var buttonsRemove = document.getElementsByClassName("but-remove");
+
+  console.log(buttonsRemove);
+
+  Array.from(document.getElementsByClassName("but-remove")).forEach(function(element) {
+      console.log(element);
+    });
 
   // TODO add service worker code here
   if ('serviceWorker' in navigator) {

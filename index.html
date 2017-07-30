@@ -44,6 +44,7 @@
 
   <main class="main">
     <div class="card cardTemplate weather-forecast" hidden>
+      <button class="but-remove"></button>
       <div class="city-key" hidden></div>
       <div class="card-last-updated" hidden></div>
       <div class="location"></div>
@@ -144,9 +145,12 @@
 
   <div class="dialog-container">
     <div class="dialog">
-      <div class="dialog-title">Ajouter une ville</div>
+      <div class="dialog-title">Saisir la ville</div>
       <div class="dialog-body">
-      <input type="text" id="searchCity">
+      <input type="text" id="searchCity" placeholder="Rechercher">
+      <ul id="listCitys">
+        <li class="first" hidden>Recherche en cours...</li>
+      </ul>
       <!-- 
         <select id="selectCityToAdd">
           Values map to Yahoo Weather API Where On Earth Identifiers (WOEIDs).
@@ -159,7 +163,7 @@
          -->
       </div>
       <div class="dialog-buttons">
-        <button id="butAddCity" class="button">Ajouter</button>
+        <!-- <button id="butAddCity" class="button">Ajouter</button> -->
         <button id="butAddCancel" class="button">Fermer</button>
       </div>
     </div>
