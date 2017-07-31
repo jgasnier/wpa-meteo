@@ -260,7 +260,7 @@ body {
 .but-remove{
   background: url(/images/ic_clear_black.png) no-repeat;
   border: none;
-  padding: 15px;
+  padding: 18px;
   float: right;
   background-size: 2.8em;
 }
@@ -319,7 +319,7 @@ body {
 .weather-forecast .location {
   font-size: 1.75em; }
 
-.weather-forecast .description{
+.weather-forecast .principal{
   font-weight: bold;
   margin-top: 10px;
 }

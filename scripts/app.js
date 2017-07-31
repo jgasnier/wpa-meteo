@@ -97,7 +97,9 @@
     var card = app.visibleCards[data.key];
     if (!card) {
       card = app.cardTemplate.cloneNode(true);
+      card.setAttribute("id",data.key);
       card.classList.remove('cardTemplate');
+      card.querySelector('.but-remove').setAttribute("onclick","removeCard('"+data.key+"')");
       card.querySelector('.location').textContent = data.label;
       card.removeAttribute('hidden');
       app.container.appendChild(card);
@@ -201,6 +203,7 @@
         statement;
     // TODO add cache logic here
     if ('caches' in window) {
+
       /*
        * Check if the service worker has already cached this city's weather
        * data. If the service worker has the data, then display the cached
@@ -232,8 +235,6 @@
         }else{
 
           app.spinner.setAttribute('hidden', true);
-          app.error.classList.add('error-visible');
-
         }
       }
     };
@@ -416,9 +417,7 @@
             app.saveSelectedCities();
            
           }
-        } else {
-         
-        }
+        } 
       };
       request.open('GET', url);
       request.send();
@@ -443,9 +442,7 @@
       if (request.readyState === XMLHttpRequest.DONE) {
         if (request.status === 200) {
           var response = JSON.parse(request.response);
-          //var results = response.query.results.place;
 
-          //document.querySelector("#listCitys .first").removeAttribute('hidden');
           var list = document.getElementById("listCitys");
           list.innerHTML = '';
 
@@ -458,9 +455,7 @@
             });
           }else{
             app.constructList(list,response.query.results.place);
-          }
-
-          //document.querySelector("#listCitys .first").setAttribute('hidden','hidden');                    
+          }                  
         }
       } 
     };  
@@ -496,20 +491,32 @@
     
   }
 
-
-
-  var buttonsRemove = document.getElementsByClassName("but-remove");
-
-  console.log(buttonsRemove);
-
-  Array.from(document.getElementsByClassName("but-remove")).forEach(function(element) {
-      console.log(element);
-    });
-
-  // TODO add service worker code here
+  // add service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker
              .register('./service-worker.js')
              .then(function() { console.log('Service Worker Registered'); });
   }
+
 })();
+
+
+/************************************************************************
+ *
+ * This code is not in app
+ *
+ ************************************************************************/
+
+//remove card
+function removeCard(item){
+  
+  var el = document.getElementById(item);
+  el.remove();
+
+  // remove in the localStorage
+  var json = JSON.parse(localStorage["selectedCities"]);
+  for (i=0;i<json.length;i++)
+              if (json[i].key == item) json.splice(i,1);
+  localStorage["selectedCities"] = JSON.stringify(json);
+
+}
